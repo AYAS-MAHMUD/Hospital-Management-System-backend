@@ -1,6 +1,7 @@
 
 
 import express, { Application } from "express"
+import router from "./app/router/index.js";
 
 const app:Application = express()
 
@@ -8,7 +9,7 @@ const app:Application = express()
 // middleware 
 
 app.use(express.json());
-// app.use()
+
 
 
 app.get("/",(req,res)=>{
@@ -19,7 +20,7 @@ app.get("/",(req,res)=>{
 })
 
 
-// app.use("/api/v1");
+app.use("/api/v1",router);
 
 
 

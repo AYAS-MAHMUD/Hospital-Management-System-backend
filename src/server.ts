@@ -32,7 +32,7 @@ process.on("unhandledRejection",()=>{
 })
 
 // Uncaught Exception
-process.on("uncaughtException", (error) => {
+process.on("uncaughtException", () => {
   console.log("Uncaught Exception Detected");
   process.exit(1);
 });

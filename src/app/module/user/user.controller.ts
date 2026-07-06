@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import catchAsync from "../../shared/catchAsync.js";
 import { userService } from "./user.service.js";
+import { sendResponse } from "../../shared/sendResponse.js";
 
 
 
@@ -8,12 +9,13 @@ import { userService } from "./user.service.js";
 const crateUser = catchAsync(
     async(req : Request , res : Response) =>{
         const body = req.body;
-        const result = await userService.createUser(body);
-
-        res.status(200).json({
+        const data = await userService.createUser(body);
+        console.log(data)
+        sendResponse(res,{
+            statusCode : 201,
             success : true,
-            message : "Done",
-            data : result
+            message : "User created successfully",
+            data : data
         })
     }
 )

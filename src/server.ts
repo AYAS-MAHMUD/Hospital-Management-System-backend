@@ -1,12 +1,16 @@
 
 import http from "http"
 import app from "./app.js";
+import { prisma } from "./app/shared/prisma.js";
 
 let server : http.Server ;
 
 
 async function botstrap(){
   try {
+    await prisma.$connect();
+    console.log("Database Connected");
+
     server = app.listen(3000,()=>{
       console.log("Server running successfully on port 3000");
     })

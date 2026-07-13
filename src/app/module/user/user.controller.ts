@@ -8,19 +8,19 @@ import { sendResponse } from "../../shared/sendResponse.js";
 
 const crateUser = catchAsync(
     async(req : Request , res : Response) =>{
-        // const body = req.body;
-        console.log({
-            file : req.file,
-            body : req.body
+        const data = JSON.parse(req.body.data);
+        const file = req.file;
 
-        })
-        // const data = await userService.createUser(body);
+        // console.log("pass : ",data.password);
+        // console.log("image : ", file?.path)
+        
+        const result = await userService.createUser(data,file);
         // console.log(data)
         sendResponse(res,{
             statusCode : 201,
             success : true,
             message : "User created successfully",
-            data : {}
+            data : result
         })
     }
 )

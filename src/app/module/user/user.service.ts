@@ -4,21 +4,22 @@ import { patientInputData } from "./user.validation.js";
 import { prisma } from "../../shared/prisma.js";
 
 
-const createUser = async (payload: patientInputData) => {
-  const hashPassword = await bcrypt.hash(payload.password, 10);
+const createUser = async (data: patientInputData , file : any) => {
+  const hashPassword = await bcrypt.hash(data.password, 10);
 
   const result = await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
-        email: payload.email,
+        email: data.email,
         password: hashPassword,
       },
     });
 
     const patient = await tx.patient.create({
       data: {
-        name: payload.name,
-        email: payload.email,
+        name: data.name,
+        email: data.email,
+        profilePhoto : file?.path
       },
     });
 
@@ -36,3 +37,7 @@ export const userService = {
     createUser,
 
 }
+
+
+
+

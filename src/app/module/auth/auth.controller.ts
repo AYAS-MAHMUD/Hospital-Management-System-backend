@@ -14,12 +14,14 @@ const Login = catchAsync(
          res.cookie("accessToken",result.accessToken,{
             httpOnly : true,
             secure : true,
-            sameSite : "none"
+            sameSite : "none",
+            maxAge : 1000 * 60 * 60 
          })
          res.cookie("refreshToken",result.refreshToken,{
             httpOnly : true,
             secure : true,
-            sameSite : "none"
+            sameSite : "none",
+            maxAge : 1000 * 60 * 60 * 24 * 7
          })
          sendResponse(res,{
             statusCode : 200,
@@ -28,7 +30,7 @@ const Login = catchAsync(
             data : {
                 accessToken : result.accessToken,
                 refreshToken : result.refreshToken,
-                
+
             }
          })
 

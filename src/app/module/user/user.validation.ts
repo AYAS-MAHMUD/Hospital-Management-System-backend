@@ -1,3 +1,4 @@
+import { Gender } from "@prisma/client";
 import { z } from "zod";
 
 export interface patientInputData {
@@ -24,5 +25,39 @@ export const createPatientValidation = z.object({
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#])[A-Za-z\d@$!%*?&.#]+$/,
         "Password must contain uppercase, lowercase, number and special character",
       ),
+  }),
+});
+
+
+export const createDoctorValidationSchema = z.object({
+  body: z.object({
+    password: z.string().min(6),
+
+    doctor: z.object({
+      
+      name: z.string().optional(),
+
+      email: z.string().email(),
+
+      profilePhoto: z.string().optional(),
+
+      contactNumber: z.string(),
+
+      address: z.string(),
+
+      registrationNumber: z.string(),
+
+      experience: z.number().optional(),
+
+      gender: z.nativeEnum(Gender),
+
+      appointmentFee: z.number(),
+
+      qualification: z.string(),
+
+      currentWorkingPlace: z.string(),
+
+      designation: z.string(),
+    }),
   }),
 });

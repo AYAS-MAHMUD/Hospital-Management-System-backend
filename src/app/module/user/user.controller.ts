@@ -6,11 +6,27 @@ import { sendResponse } from "../../shared/sendResponse.js";
 
 
 
-const crateUser = catchAsync(
+const createPatient = catchAsync(
     async(req : Request , res : Response) =>{
         const data = JSON.parse(req.body.data);
         const file = req.file;
-        const result = await userService.createUser(data,file);
+        const result = await userService.createPatient(data,file);
+
+        sendResponse(res,{
+            statusCode : 201,
+            success : true,
+            message : "User created successfully",
+            data : result
+        })
+    }
+)
+
+const createDoctor = catchAsync(
+    async(req : Request , res : Response) =>{
+        const data = JSON.parse(req.body.data);
+        const file = req.file;
+        console.log(data,file)
+        const result = await userService.createDoctor(data,file);
 
         sendResponse(res,{
             statusCode : 201,
@@ -38,6 +54,7 @@ const getAllUser = catchAsync(
 
 
 export const userController = {
-    crateUser,
+    createPatient,
+    createDoctor,
     getAllUser,
 }

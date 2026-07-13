@@ -10,12 +10,8 @@ const crateUser = catchAsync(
     async(req : Request , res : Response) =>{
         const data = JSON.parse(req.body.data);
         const file = req.file;
-
-        // console.log("pass : ",data.password);
-        // console.log("image : ", file?.path)
-        
         const result = await userService.createUser(data,file);
-        // console.log(data)
+
         sendResponse(res,{
             statusCode : 201,
             success : true,
@@ -26,7 +22,22 @@ const crateUser = catchAsync(
 )
 
 
+const getAllUser = catchAsync(
+    async(req : Request , res : Response) =>{
+
+        const result = await userService.getAllUser();
+
+        sendResponse(res,{
+            statusCode : 201,
+            success : true,
+            message : "All User Retrive successfully",
+            data : result
+        })
+    }
+)
+
+
 export const userController = {
     crateUser,
-
+    getAllUser,
 }

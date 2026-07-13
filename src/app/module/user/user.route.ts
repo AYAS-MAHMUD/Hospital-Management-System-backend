@@ -9,5 +9,6 @@ const router = Router()
 
 
 router.post("/create",multerUpload.single("file"), userController.crateUser);
+router.get("/allUser", userController.getAllUser);
 
 export const userRouter = router;

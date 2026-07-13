@@ -32,9 +32,13 @@ const createUser = async (data: patientInputData , file : any) => {
   return result;
 };
 
-
+const getAllUser = async ()=>{
+  const user = await prisma.user.findMany();
+  return user
+}
 export const userService = {
     createUser,
+    getAllUser,
 
 }
 

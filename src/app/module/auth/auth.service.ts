@@ -20,12 +20,9 @@ const Login = async(payload : any) =>{
     })
 
     const isPasswordCorrect = await bcrypt.compare(password,isExitUser?.password as string);
+
     
-    if(isPasswordCorrect){
-        console.log("pass correct");
-    }else{
-        console.log("not corr")
-    }
+
 
 }
 

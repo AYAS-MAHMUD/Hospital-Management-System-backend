@@ -10,12 +10,26 @@ const Login = catchAsync(
         const body = req.body ;
 
          const result = await authService.Login(body);
-
+        
+         res.cookie("accessToken",result.accessToken,{
+            httpOnly : true,
+            secure : true,
+            sameSite : "none"
+         })
+         res.cookie("refreshToken",result.refreshToken,{
+            httpOnly : true,
+            secure : true,
+            sameSite : "none"
+         })
          sendResponse(res,{
             statusCode : 200,
             success : true,
             message : "User login Successfully",
-            data : result
+            data : {
+                accessToken : result.accessToken,
+                refreshToken : result.refreshToken,
+                
+            }
          })
 
     }

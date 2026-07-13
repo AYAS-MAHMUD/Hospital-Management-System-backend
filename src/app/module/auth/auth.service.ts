@@ -1,6 +1,8 @@
 import { UserStatus } from "@prisma/client";
 import { prisma } from "../../shared/prisma.js"
 import  bcrypt  from 'bcrypt';
+import { AppError } from "../../errors/AppError.js";
+import { createUserToken } from "../../shared/userToken.js";
 
 
 
@@ -20,10 +22,12 @@ const Login = async(payload : any) =>{
     })
 
     const isPasswordCorrect = await bcrypt.compare(password,isExitUser?.password as string);
-
-    
-
-
+    if(!isPasswordCorrect){
+        throw new AppError(400, "Password is incorrect");
+    }
+     console.log(isExitUser)
+    const userToken = createUserToken(isExitUser);
+    return userToken;
 }
 
 

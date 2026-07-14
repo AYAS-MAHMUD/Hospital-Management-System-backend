@@ -7,6 +7,15 @@ export interface patientInputData {
   password: string;
 }
 
+export interface IUserQuery {
+  page?: string;
+  limit?: string;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+
 export const createPatientValidation = z.object({
   body: z.object({
     name: z

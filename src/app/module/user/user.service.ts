@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { patientInputData } from "./user.validation.js";
+import { IUserQuery, patientInputData } from "./user.validation.js";
 import { prisma } from "../../shared/prisma.js";
 import { UserRole } from "@prisma/client";
 import { AppError } from "../../errors/AppError.js";
@@ -94,14 +94,14 @@ const createAdmin = async (data: any, file: any) => {
 
   const result = await prisma.$transaction(async (tx)=>{
 
-    return await tx.user.create({
+    const user =  await tx.user.create({
       data : {
         email : data.email,
         password : hashPassword,
         role : UserRole.ADMIN
       }
     })
-    return await tx.admin.create({
+    const admin =  await tx.admin.create({
       data : {
         name : data.name,
         email : data.email,
@@ -109,6 +109,7 @@ const createAdmin = async (data: any, file: any) => {
         contactNumber : data.contactNumber
       }
     })
+    return { user , admin}
 
 
 
@@ -118,25 +119,32 @@ const createAdmin = async (data: any, file: any) => {
 
 };
 
-// {
-//   name: 'Dr. Ahmed Rahman',
-//   email: 'aha@example.com',
-//   password: 'Doctor1111@',
-//   contactNumber: '+8801712345678'
-// } {
-//   fieldname: 'file',
-//   originalname: 'abu taher.jpeg',
-//   encoding: '7bit',
-//   mimetype: 'image/jpeg',
-//   path: 'https://res.cloudinary.com/hogzikuw/image/upload/v1784007186/jl7whsx7plq-1784007183275-abu-taher-jpeg.jpeg.jpg',
-//   size: 246779,
-//   filename: 'jl7whsx7plq-1784007183275-abu-taher-jpeg.jpeg'
-// }
+const getAllUser = async (query : IUserQuery) => {
+  const page = Number(query.page);
+  const limit = Number(query.limit);
+  const skip = (page-1) * limit;
 
-const getAllUser = async () => {
-  const user = await prisma.user.findMany();
-  return user;
+
+  // console.log(page, limit , skip)
+  const user = await prisma.user.findMany({
+    skip,
+    take : limit
+  });
+  
+  const total = await prisma.user.count();
+
+  return {
+    user,
+    meta : {
+      page,
+      limit,
+      skip,
+      totalUser : total,
+      totalPage : Math.ceil(total/limit)
+    }
+  };
 };
+
 export const userService = {
   createPatient,
   createDoctor,

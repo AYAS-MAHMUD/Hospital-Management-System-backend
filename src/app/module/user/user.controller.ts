@@ -59,7 +59,7 @@ const createAdmin = catchAsync(
 const getAllUser = catchAsync(
     async(req : Request , res : Response) =>{
 
-        const result = await userService.getAllUser();
+        const result = await userService.getAllUser(req.query);
 
         sendResponse(res,{
             statusCode : 201,

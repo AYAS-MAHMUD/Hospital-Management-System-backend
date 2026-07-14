@@ -1,4 +1,4 @@
-import { Gender } from "@prisma/client";
+import { Gender, UserRole, UserStatus } from "@prisma/client";
 import { email, z } from "zod";
 
 export interface patientInputData {
@@ -13,6 +13,8 @@ export interface IUserQuery {
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  role?: UserRole;
+  status ?: UserStatus
 }
 
 

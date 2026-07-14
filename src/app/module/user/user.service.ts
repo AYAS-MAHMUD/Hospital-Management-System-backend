@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { IUserQuery, patientInputData } from "./user.validation.js";
 import { prisma } from "../../shared/prisma.js";
-import { Prisma, UserRole } from "@prisma/client";
+import { Prisma, UserRole, UserStatus } from "@prisma/client";
 import { AppError } from "../../errors/AppError.js";
 
 const createPatient = async (data: patientInputData, file: any) => {
@@ -113,55 +113,55 @@ const createAdmin = async (data: any, file: any) => {
   return result;
 };
 
-const getAllUser = async (query: IUserQuery) => {
 
+
+
+
+
+
+
+
+const getAllUser = async (query: IUserQuery) => {
   // for pagination
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 10;
   const skip = (page - 1) * limit;
-  
+
   // For sorting
-  
+
   const sortBy = query.sortBy || "createdAt";
   const sortOrder = query.sortOrder || "desc";
 
-  // for searching 
-  const searchTerm = query.search || "";
-  const searchableFields = ["email"];
-
-  // const whereCondition : Prisma.UserWhereInput = searchTerm
-  //   ? {
-  //       OR: [
-  //         {
-  //           email: {
-  //             contains: searchTerm,
-  //             mode: "insensitive",
-  //           },
-  //         },
-  //         {
-  //           role : {
-  //             equals : searchTerm as UserRole,
-  //           }
-  //         }
-  //       ],
-  //     }
-  //   : {}
-
-
-
   // for searching
- 
- 
-  const whereCondition = searchTerm
+  const searchTerm = query.search || "";
+  // For filtering
+  const role = query.role;
+  const status = query.status;
+  console.log(searchTerm, role)
+
+  const whereCondition : Prisma.UserWhereInput = searchTerm
     ? {
-        OR: searchableFields.map((i) => ({
-          [i]: {
-            contains: searchTerm,
-            mode: "insensitive",
+        OR: [
+          {
+            email: {
+              contains: searchTerm,
+              mode: "insensitive",
+            },
           },
-        })),
+          {
+            role : {
+              equals : role as UserRole,
+            }
+          },
+          {
+            status : {
+              equals : status as UserStatus
+            }
+          }
+        ],
       }
-    : {};
+    : {}
+
 
   const users = await prisma.user.findMany({
     where: whereCondition,
@@ -186,6 +186,10 @@ const getAllUser = async (query: IUserQuery) => {
     data: users,
   };
 };
+
+
+
+
 
 export const userService = {
   createPatient,

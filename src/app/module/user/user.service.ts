@@ -4,7 +4,6 @@ import { prisma } from "../../shared/prisma.js";
 import { Prisma, UserRole } from "@prisma/client";
 import { AppError } from "../../errors/AppError.js";
 
-
 const createPatient = async (data: patientInputData, file: any) => {
   const hashPassword = await bcrypt.hash(data.password, 10);
 
@@ -93,41 +92,42 @@ const createAdmin = async (data: any, file: any) => {
 
   const hashPassword = await bcrypt.hash(data.password, 10);
 
-  const result = await prisma.$transaction(async (tx)=>{
-
-    const user =  await tx.user.create({
-      data : {
-        email : data.email,
-        password : hashPassword,
-        role : UserRole.ADMIN
-      }
-    })
-    const admin =  await tx.admin.create({
-      data : {
-        name : data.name,
-        email : data.email,
-        profilePhoto : file.path,
-        contactNumber : data.contactNumber
-      }
-    })
-    return { user , admin}
-
-
-
-  })
-  return result
-
-
+  const result = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        email: data.email,
+        password: hashPassword,
+        role: UserRole.ADMIN,
+      },
+    });
+    const admin = await tx.admin.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        profilePhoto: file.path,
+        contactNumber: data.contactNumber,
+      },
+    });
+    return { user, admin };
+  });
+  return result;
 };
 
 const getAllUser = async (query: IUserQuery) => {
+
+  // for pagination
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 10;
   const skip = (page - 1) * limit;
-  const searchTerm = query.searchTerm || "";
+  
+  // For sorting
+  
+  const sortBy = query.sortBy || "createdAt";
+  const sortOrder = query.sortOrder || "desc";
 
-
- const searchableFields = ["email"]; 
+  // for searching 
+  const searchTerm = query.search || "";
+  const searchableFields = ["email"];
 
   // const whereCondition : Prisma.UserWhereInput = searchTerm
   //   ? {
@@ -145,24 +145,30 @@ const getAllUser = async (query: IUserQuery) => {
   //         }
   //       ],
   //     }
-  //   : {};
+  //   : {}
 
-  const whereCondition  = searchTerm ? {
-    OR : searchableFields.map((i)=>({
-      [i] : {
-        contains : searchTerm,
-        mode : "insensitive"
+
+
+  // for searching
+ 
+ 
+  const whereCondition = searchTerm
+    ? {
+        OR: searchableFields.map((i) => ({
+          [i]: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        })),
       }
-    })),
-  } : {};
-
+    : {};
 
   const users = await prisma.user.findMany({
     where: whereCondition,
     skip,
     take: limit,
     orderBy: {
-      createdAt: "desc",
+      [sortBy]: sortOrder,
     },
   });
 

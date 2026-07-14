@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
 import { IUserQuery, patientInputData } from "./user.validation.js";
 import { prisma } from "../../shared/prisma.js";
-import { UserRole } from "@prisma/client";
+import { Prisma, UserRole } from "@prisma/client";
 import { AppError } from "../../errors/AppError.js";
+
 
 const createPatient = async (data: patientInputData, file: any) => {
   const hashPassword = await bcrypt.hash(data.password, 10);
@@ -119,29 +120,64 @@ const createAdmin = async (data: any, file: any) => {
 
 };
 
-const getAllUser = async (query : IUserQuery) => {
-  const page = Number(query.page);
-  const limit = Number(query.limit);
-  const skip = (page-1) * limit;
+const getAllUser = async (query: IUserQuery) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const searchTerm = query.searchTerm || "";
 
 
-  // console.log(page, limit , skip)
-  const user = await prisma.user.findMany({
+ const searchableFields = ["email"]; 
+
+  // const whereCondition : Prisma.UserWhereInput = searchTerm
+  //   ? {
+  //       OR: [
+  //         {
+  //           email: {
+  //             contains: searchTerm,
+  //             mode: "insensitive",
+  //           },
+  //         },
+  //         {
+  //           role : {
+  //             equals : searchTerm as UserRole,
+  //           }
+  //         }
+  //       ],
+  //     }
+  //   : {};
+
+  const whereCondition  = searchTerm ? {
+    OR : searchableFields.map((i)=>({
+      [i] : {
+        contains : searchTerm,
+        mode : "insensitive"
+      }
+    })),
+  } : {};
+
+
+  const users = await prisma.user.findMany({
+    where: whereCondition,
     skip,
-    take : limit
+    take: limit,
+    orderBy: {
+      createdAt: "desc",
+    },
   });
-  
-  const total = await prisma.user.count();
+
+  const total = await prisma.user.count({
+    where: whereCondition,
+  });
 
   return {
-    user,
-    meta : {
+    meta: {
       page,
       limit,
-      skip,
-      totalUser : total,
-      totalPage : Math.ceil(total/limit)
-    }
+      total,
+      totalPage: Math.ceil(total / limit),
+    },
+    data: users,
   };
 };
 

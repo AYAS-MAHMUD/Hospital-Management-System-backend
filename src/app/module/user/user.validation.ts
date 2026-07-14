@@ -13,6 +13,7 @@ export interface IUserQuery {
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  searchTerm?: string;
 }
 
 

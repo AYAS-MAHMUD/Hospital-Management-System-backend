@@ -25,8 +25,26 @@ const createDoctor = catchAsync(
     async(req : Request , res : Response) =>{
         const data = JSON.parse(req.body.data);
         const file = req.file;
-        console.log(data,file)
+        // console.log(data,file)
         const result = await userService.createDoctor(data,file);
+
+        sendResponse(res,{
+            statusCode : 201,
+            success : true,
+            message : "User created successfully",
+            data : result
+        })
+    }
+)
+
+
+const createAdmin = catchAsync(
+    async(req : Request , res : Response) =>{
+        const data = JSON.parse(req.body.data);
+        const file = req.file;
+
+        // console.log(data,file)
+        const result = await userService.createAdmin(data,file);
 
         sendResponse(res,{
             statusCode : 201,
@@ -56,5 +74,6 @@ const getAllUser = catchAsync(
 export const userController = {
     createPatient,
     createDoctor,
+    createAdmin,
     getAllUser,
 }

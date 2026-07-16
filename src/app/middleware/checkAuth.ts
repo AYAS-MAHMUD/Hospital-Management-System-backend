@@ -9,8 +9,9 @@ import { config } from "../config/index.js";
 export const checkAuth = (...roles : string[]) =>
     async (req : Request, res : Response, next : NextFunction)=>{
         try {
-            // token get 
-            const accessToken = req.headers.authorization;
+            // token get from cookie 
+            const accessToken = req.cookies.accessToken;
+
             if(!accessToken){
                 throw new AppError(StatusCodes.UNAUTHORIZED,"No token found")
             }

@@ -21,7 +21,28 @@ const scheduleInsert = catchAsync(
 )
 
 
+
+
+const scheduleForDoctor = catchAsync(
+    async(req : Request, res : Response) =>{
+
+        const result = await scheduleService.scheduleForDoctor(req.query);
+
+
+        sendResponse(res,{
+            statusCode : httpStatusCode.OK,
+            success : true,
+            message : "Schedule retrieved successfully",
+            data : result
+        })
+    }
+)
+
+
+
+
 export const scheduleController = {
     scheduleInsert,
+    scheduleForDoctor
     
 }

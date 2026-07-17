@@ -5,7 +5,7 @@ const router  = Router()
 
 router.post("/",scheduleController.scheduleInsert);
 
-
+router.get("/",scheduleController.scheduleForDoctor);
 
 
 export const scheduler = router;

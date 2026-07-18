@@ -25,7 +25,9 @@ const Login = async(payload : any) =>{
     if(!isPasswordCorrect){
         throw new AppError(400, "Password is incorrect");
     }
-     console.log(isExitUser)
+    //  console.log(isExitUser)
+
+    
     const userToken = createUserToken(isExitUser);
     return userToken;
 }

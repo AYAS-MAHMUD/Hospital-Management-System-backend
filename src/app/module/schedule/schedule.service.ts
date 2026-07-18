@@ -68,6 +68,7 @@ const scheduleInsert = async (payload: any) => {
 const scheduleForDoctor = async(payload: any)=>{
     // filter startdatetime and enddatetime from payload
     const {startDateTime, endDateTime} = payload;
+    
     const whereCondition  : any = startDateTime && endDateTime ? {
         
             startDateTime : {
@@ -79,21 +80,50 @@ const scheduleForDoctor = async(payload: any)=>{
 
         
     } : {}
+
+
+
+        const doctorSchedules = await prisma.doctorSchedule.findMany({
+        where : {
+            doctor : {
+                email : payload.user.email
+            }
+        },
+        select : {
+            scheduleId : true
+        }
+    }) 
+    const doctorScheduleIds = doctorSchedules.map((ds)=>ds.scheduleId);
+
+
+
+    
     const result = await prisma.schedule.findMany({
-        where : whereCondition,
-        orderBy : {
-            startDateTime : "asc"
+        where : {
+            ...whereCondition,
+            id : {
+                notIn : doctorScheduleIds
+            }
         }
 
     })
 
+
+
+
+
     const count = await prisma.schedule.count({
-        where : whereCondition
+        where : {
+            ...whereCondition,
+            id : {
+                notIn : doctorScheduleIds
+            }
+        }
     })
 
     return {
         meta : {
-            total : count
+            total : count 
         },
         data : result
     }

@@ -25,8 +25,10 @@ const scheduleInsert = catchAsync(
 
 const scheduleForDoctor = catchAsync(
     async(req : Request, res : Response) =>{
-
-        const result = await scheduleService.scheduleForDoctor(req.query);
+        // console.log("fi:",req.user)
+        const user = req.user;
+        
+        const result = await scheduleService.scheduleForDoctor({...req.query, user});
 
 
         sendResponse(res,{
@@ -38,6 +40,13 @@ const scheduleForDoctor = catchAsync(
     }
 )
 
+// fi: {
+//   id: '78581705-99bc-406b-85bf-9cd6ce58eb29',
+//   email: 'ahmed@example.com',
+//   role: 'DOCTOR',
+//   iat: 1784362901,
+//   exp: 1784363801
+// }
 
 
 const deleteSchedule = catchAsync(

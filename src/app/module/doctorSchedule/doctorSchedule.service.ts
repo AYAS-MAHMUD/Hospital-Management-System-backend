@@ -21,6 +21,35 @@ const doctorScheduleInsert = async (user: any, payload: any) => {
   })
 };
 
+
+const getDoctorSchedules = async (user : any) => {
+  // console.log(user.id)
+  // get doctor schedule
+  const doctorSchedules = await prisma.doctorSchedule.findMany({
+    where: {
+      doctor: {
+        email: user.email,
+      },
+    },
+    select: {
+      scheduleId: true,
+    },
+  });
+
+  const doctorScheduleIds = doctorSchedules.map((ds) => ds.scheduleId);
+
+  const result = await prisma.schedule.findMany({
+    where: {
+      id: {
+        in: doctorScheduleIds,
+      },
+    },
+  });
+
+  return result
+};
+
 export const doctorScheduleService = {
   doctorScheduleInsert,
+  getDoctorSchedules,
 };

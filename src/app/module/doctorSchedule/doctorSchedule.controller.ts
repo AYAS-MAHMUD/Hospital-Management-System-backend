@@ -20,6 +20,23 @@ const createDoctorSchedule = catchAsync(
     }
 )
 
+
+const getDoctorSchedules = catchAsync(
+    async(req : Request , res : Response) =>{
+        const user = req.user;
+
+        const result = await doctorScheduleService.getDoctorSchedules(user);
+
+        sendResponse(res,{
+            statusCode : 201,
+            success : true,
+            message : "Doctor schedule created successfully",
+            data : result
+        })
+    }
+)
+
 export const doctorScheduleController = {
-    createDoctorSchedule
+    createDoctorSchedule,
+    getDoctorSchedules,
 }

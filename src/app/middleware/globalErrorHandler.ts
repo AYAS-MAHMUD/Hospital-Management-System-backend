@@ -55,12 +55,21 @@ const globalErrorHandler: ErrorRequestHandler = (
 
     errorSources = [
       {
-        path: "",
+        path: req.originalUrl,
         message: error.message,
       },
     ];
   }
-
+  else if (error instanceof Prisma.PrismaClientValidationError){
+    statusCode = 400;
+    message = "Validation Error";
+    errorSources = [
+      {
+        path: req.originalUrl,
+        message: error.message,
+      },
+    ];
+  }
   // JWT Error
   else if (error instanceof jwt.JsonWebTokenError) {
     statusCode = 401;
@@ -69,7 +78,7 @@ const globalErrorHandler: ErrorRequestHandler = (
 
     errorSources = [
       {
-        path: "",
+        path: req.originalUrl,
         message: error.message,
       },
     ];
@@ -81,7 +90,7 @@ const globalErrorHandler: ErrorRequestHandler = (
 
     errorSources = [
       {
-        path: "",
+        path: req.originalUrl,
         message: error.message,
       },
     ];

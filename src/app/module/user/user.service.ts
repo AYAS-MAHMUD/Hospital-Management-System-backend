@@ -42,9 +42,9 @@ const createDoctor = async (data: any, file: any) => {
   const isExistingUser = await prisma.user.findUnique({
     where: { email: data.email },
   });
-  if (isExistingUser) {
-    throw new AppError(400, "User already exists");
-  }
+  // if (isExistingUser) {
+  //   throw new AppError(400, "User already exists");
+  // }
   const hashPassword = await bcrypt.hash(data.password, 10);
 
   const result = await prisma.$transaction(async (txx) => {

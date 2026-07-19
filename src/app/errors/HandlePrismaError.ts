@@ -25,7 +25,7 @@ const handlePrismaError = (
     message,
     errorSources: [
       {
-        path: "",
+        path: "" ,
         message,
       },
     ],

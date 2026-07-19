@@ -8,5 +8,5 @@ const router = Router();
 
 router.post("/",checkAuth(UserRole.DOCTOR),doctorScheduleController.createDoctorSchedule)
 router.get("/",checkAuth(UserRole.DOCTOR),doctorScheduleController.getDoctorSchedules);
-
+router.delete("/:id",checkAuth(UserRole.DOCTOR),doctorScheduleController.deleteDoctorSchedule)
 export const doctorScheduleRoute = router;
